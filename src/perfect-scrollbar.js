@@ -35,7 +35,7 @@
   }());
 
   $.fn.perfectScrollbar = function (suppliedSettings, option) {
-
+    var spaceFlag = 1;
     return this.each(function () {
       // Use the default settings
       var settings = $.extend(true, {}, defaultSettings),
@@ -351,6 +351,11 @@
             deltaY = 9;
             break;
           case 32: // space bar
+              if(spaceFlag === 0)
+                return;
+              else
+                deltaY = -9;
+              break;
           case 34: // page down
             deltaY = -9;
             break;
@@ -577,9 +582,21 @@
         if (settings.useKeyboard) {
           bindKeyboardHandler();
         }
+        if(typeof settings.disableSpaceEvent !== 'undefined' && typeof settings.enableSpaceEvent !== 'undefined'){
+          bindSpaceEvent();
+        }
         $this.data('perfect-scrollbar', $this);
         $this.data('perfect-scrollbar-update', updateBarSizeAndPosition);
         $this.data('perfect-scrollbar-destroy', destroy);
+      };
+
+      var bindSpaceEvent = function(){
+        $this.on(settings.disableSpaceEvent, function(){
+          spaceFlag = 0;
+        });
+        $this.on(settings.enableSpaceEvent, function(){
+          spaceFlag = 1;
+        });
       };
 
       // initialize
